@@ -1,8 +1,17 @@
-from src.app import app
 from fastapi.testclient import TestClient
+from src.app import app
+
+client = TestClient(app)
 
 
 def test_health_endpoint():
-    client = TestClient(app)
-    response = client.get("/health")
-    assert response.status_code == 200
+    r = client.get("/health")
+    assert r.status_code == 200
+    assert r.json() == {"status": "ok"}
+
+
+def test_analyze_endpoint_dummy():
+    # simple smoke test for /analyze using no file payload
+    # we send an empty multipart to check server returns 422 or valid response
+    r = client.post("/analyze")
+    assert r.status_code in (422, 200)
