@@ -105,7 +105,8 @@ The **ChromaMatch API** is built using **FastAPI**, which automatically generate
 
 **Example Response:**
 
-```curl.exe -X POST "http://127.0.0.1:8000/analyze"
+```bash
+curl.exe -X POST "http://127.0.0.1:8000/analyze"
      -F "file=@C:\Users\dell\Downloads\MLOPS\ChromaMatch\monitoring\test_images\person1.jpg" `
      -H "accept: application/json"
 ```
