@@ -8,19 +8,22 @@ from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
 import math
-import os
 
 # We'll lazily load processor & model so importing the module won't download models immediately.
 _processor = None
 _model = None
+
 
 def _ensure_model_loaded():
     global _processor, _model
     if _processor is None or _model is None:
         # you can change the HF model name if needed
         _processor = AutoImageProcessor.from_pretrained("jonathandinu/face-parsing")
-        _model = AutoModelForSemanticSegmentation.from_pretrained("jonathandinu/face-parsing")
+        _model = AutoModelForSemanticSegmentation.from_pretrained(
+            "jonathandinu/face-parsing"
+        )
     return _processor, _model
+
 
 def rgb2lab(rgb):
     rgb = np.array(rgb) / 255.0
@@ -37,13 +40,16 @@ def rgb2lab(rgb):
     Y /= 100.0
     Z /= 108.883
 
-    def f(t): return t ** (1/3) if t > 0.008856 else (7.787 * t) + (16/116)
+    def f(t):
+        return t ** (1 / 3) if t > 0.008856 else (7.787 * t) + (16 / 116)
+
     X, Y, Z = f(X), f(Y), f(Z)
 
     L = (116 * Y) - 16
     a = 500 * (X - Y)
     b = 200 * (Y - Z)
     return np.array([L, a, b])
+
 
 def ciede2000(lab1, lab2):
     L1, a1, b1 = lab1
@@ -76,30 +82,33 @@ def ciede2000(lab1, lab2):
     else:
         h_bar_p = (h1p + h2p) / 2
 
-    T = (1
-         - 0.17 * math.cos(math.radians(h_bar_p - 30))
-         + 0.24 * math.cos(math.radians(2 * h_bar_p))
-         + 0.32 * math.cos(math.radians(3 * h_bar_p + 6))
-         - 0.20 * math.cos(math.radians(4 * h_bar_p - 63)))
+    T = (
+        1
+        - 0.17 * math.cos(math.radians(h_bar_p - 30))
+        + 0.24 * math.cos(math.radians(2 * h_bar_p))
+        + 0.32 * math.cos(math.radians(3 * h_bar_p + 6))
+        - 0.20 * math.cos(math.radians(4 * h_bar_p - 63))
+    )
 
-    SL = 1 + (0.015 * ((L_bar - 50)**2)) / math.sqrt(20 + ((L_bar - 50)**2))
+    SL = 1 + (0.015 * ((L_bar - 50) ** 2)) / math.sqrt(20 + ((L_bar - 50) ** 2))
     SC = 1 + 0.045 * C_bar_p
     SH = 1 + 0.015 * C_bar_p * T
 
-    delta_theta = 30 * math.exp(-((h_bar_p - 275) / 25)**2)
+    delta_theta = 30 * math.exp(-(((h_bar_p - 275) / 25) ** 2))
     RC = 2 * math.sqrt((C_bar_p**7) / (C_bar_p**7 + 25**7))
     RT = -math.sin(math.radians(2 * delta_theta)) * RC
 
     delta_E = math.sqrt(
-        (delta_Lp / SL)**2 +
-        (delta_Cp / SC)**2 +
-        (delta_Hp / SH)**2 +
-        RT * (delta_Cp / SC) * (delta_Hp / SH)
+        (delta_Lp / SL) ** 2
+        + (delta_Cp / SC) ** 2
+        + (delta_Hp / SH) ** 2
+        + RT * (delta_Cp / SC) * (delta_Hp / SH)
     )
     return delta_E
 
+
 def find_closest_color(lab_color, color_dict):
-    min_dist = float('inf')
+    min_dist = float("inf")
     closest_name = None
     for name, ref_lab in color_dict.items():
         dist = ciede2000(lab_color, ref_lab)
@@ -107,6 +116,7 @@ def find_closest_color(lab_color, color_dict):
             min_dist = dist
             closest_name = name
     return closest_name
+
 
 def extract_region_lab(region_mask, image_np, k=2):
     region_pixels = image_np[region_mask]
@@ -119,6 +129,7 @@ def extract_region_lab(region_mask, image_np, k=2):
     dominant_idx = unique[np.argmax(counts)]
     return kmeans.cluster_centers_[dominant_idx]
 
+
 # MST reference data (unchanged)
 monk_lab = {
     1: np.array([94.2884, 1.8519, 5.5425]),
@@ -130,7 +141,7 @@ monk_lab = {
     7: np.array([42.6321, 11.4027, 20.1281]),
     8: np.array([30.952, 11.0444, 13.7036]),
     9: np.array([21.0691, 2.6924, 5.9636]),
-    10: np.array([14.7252, 1.9748, 3.7045])
+    10: np.array([14.7252, 1.9748, 3.7045]),
 }
 
 mst_details = {
@@ -143,7 +154,7 @@ mst_details = {
     7: {"group": "Dark", "descriptor": "Chestnut / Tan"},
     8: {"group": "Dark", "descriptor": "Mocha / Deep"},
     9: {"group": "Dark", "descriptor": "Espresso / Dark"},
-    10: {"group": "Dark", "descriptor": "Ebony / Very Dark"}
+    10: {"group": "Dark", "descriptor": "Ebony / Very Dark"},
 }
 
 iris_colors_rgb = {
@@ -155,7 +166,7 @@ iris_colors_rgb = {
     "Light Brown (Hazel)": (175, 134, 107),
     "Black": (30, 30, 30),
     "Brown": (70, 40, 20),
-    "Gray": (150, 150, 150)
+    "Gray": (150, 150, 150),
 }
 iris_lab = {name: rgb2lab(rgb) for name, rgb in iris_colors_rgb.items()}
 
@@ -166,9 +177,10 @@ hair_colors_rgb = {
     "Dark Blonde": (178, 128, 65),
     "Blonde": (220, 200, 140),
     "Red": (150, 60, 40),
-    "Gray": (160, 160, 160)
+    "Gray": (160, 160, 160),
 }
 hair_lab = {name: rgb2lab(rgb) for name, rgb in hair_colors_rgb.items()}
+
 
 def analyze_image(image_path: str):
     """
@@ -193,10 +205,10 @@ def analyze_image(image_path: str):
     img_np = np.array(image)
 
     # Masks
-    skin_mask = (pred_seg == 1)
-    left_eye_mask = (pred_seg == 4)
-    right_eye_mask = (pred_seg == 5)
-    hair_mask = (pred_seg == 13)
+    skin_mask = pred_seg == 1
+    left_eye_mask = pred_seg == 4
+    right_eye_mask = pred_seg == 5
+    hair_mask = pred_seg == 13
 
     # Extract dominant LAB
     skin_lab = extract_region_lab(skin_mask, img_np)
@@ -225,6 +237,10 @@ def analyze_image(image_path: str):
         "tone_group": tone_info.get("group"),
         "descriptor": tone_info.get("descriptor"),
         "undertone": undertone,
-        "eye_color": left_eye_color if left_eye_color == right_eye_color else (left_eye_color, right_eye_color),
-        "hair_color": hair_color
+        "eye_color": (
+            left_eye_color
+            if left_eye_color == right_eye_color
+            else (left_eye_color, right_eye_color)
+        ),
+        "hair_color": hair_color,
     }

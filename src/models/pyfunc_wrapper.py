@@ -1,8 +1,8 @@
 # src/model/pyfunc_wrapper.py
 import mlflow.pyfunc
 import pandas as pd
-from typing import Any, Dict
 from .chroma_model import analyze_image
+
 
 class ChromaMatchPyFunc(mlflow.pyfunc.PythonModel):
     def load_context(self, context) -> None:
