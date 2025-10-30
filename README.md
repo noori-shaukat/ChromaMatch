@@ -23,6 +23,7 @@ E --> F[Monitoring (Evidently, Prometheus/Grafana)]
 make dev - run dev server
 make test - run tests
 make docker - build docker
+```
 
 ### MLflow Model Registry
 
@@ -72,8 +73,9 @@ To maintain clean, consistent, and secure code, pre-commit hooks were configured
 All hooks pass successfully when running:
 ```bash
 pre-commit run --all-files
+```
 
-## 🧩 D7 — API Documentation
+## API Documentation
 
 The **ChromaMatch API** is built using **FastAPI**, which automatically generates interactive documentation for developers to explore and test endpoints.
 
@@ -95,7 +97,7 @@ The **ChromaMatch API** is built using **FastAPI**, which automatically generate
 {
   "status": "ok"
 }
-
+```
 ### Analyze Image
 
 **Endpoint:** `POST /analyze`
@@ -103,9 +105,10 @@ The **ChromaMatch API** is built using **FastAPI**, which automatically generate
 
 **Example Response:**
 
-```curl.exe -X POST "http://127.0.0.1:8000/analyze" `
+```curl.exe -X POST "http://127.0.0.1:8000/analyze"
      -F "file=@C:\Users\dell\Downloads\MLOPS\ChromaMatch\monitoring\test_images\person1.jpg" `
      -H "accept: application/json"
+```
 
 ```json
 {
@@ -114,6 +117,6 @@ The **ChromaMatch API** is built using **FastAPI**, which automatically generate
   "face_shape": "oval",
   "recommendation": "Gold jewelry and earth tones suit you best."
 }
-
+```
 Example:
 ![Swagger UI](monitoring/screenshots/swagger.png)
