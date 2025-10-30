@@ -20,7 +20,7 @@ RUN addgroup --system app && adduser --system --ingroup app app
 COPY --from=build /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY src/ ./src
-COPY .env ./ .
+COPY .env ./
 
 
 USER app
