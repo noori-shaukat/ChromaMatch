@@ -1,5 +1,5 @@
 # ---- build stage ----
-FROM python:3.11-slim as build
+FROM python:3.11-slim AS build
 WORKDIR /app
 # system deps if needed (e.g., libgl1 for OpenCV)
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,7 +20,7 @@ RUN addgroup --system app && adduser --system --ingroup app app
 COPY --from=build /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY src/ ./src
-COPY .env ./
+# COPY .env ./
 
 
 USER app
