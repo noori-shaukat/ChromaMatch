@@ -27,7 +27,7 @@ They may remove comments, code, or contributions that violate this Code of Condu
 This Code of Conduct applies within all ChromaMatch spaces — including GitHub repositories, discussions, pull requests, and any related communication channels.
 
 ## Enforcement
-Instances of abusive, unethical, or otherwise unacceptable behavior may be reported to the maintainers via email at **[your_email_here]**.
+Instances of abusive, unethical, or otherwise unacceptable behavior may be reported to the maintainers via email at **[noori.shaukat@gmail.com]**.
 All reports will be handled confidentially and reviewed promptly.
 
 ## Attribution
