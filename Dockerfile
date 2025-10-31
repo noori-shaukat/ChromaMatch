@@ -3,7 +3,7 @@ FROM python:3.11-slim AS build
 WORKDIR /app
 # system deps if needed (e.g., libgl1 for OpenCV)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-build-essential gcc curl ca-certificates \
+build-essential curl ca-certificates \
 && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
