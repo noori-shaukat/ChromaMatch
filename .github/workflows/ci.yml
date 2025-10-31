@@ -40,6 +40,11 @@ jobs:
       - name: Run tests
         run: pytest --cov=src --cov-fail-under=80
 
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          df -h
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 

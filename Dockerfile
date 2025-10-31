@@ -6,13 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 build-essential gcc curl ca-certificates \
 && rm -rf /var/lib/apt/lists/*
 
-
-# create virtual environment
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
 COPY requirements.txt .
 RUN pip install --upgrade pip && \
+--mount=type=cache,target=/root/.cache/pip \
 pip install --no-cache-dir -r requirements.txt
 
 # ---- runtime stage ----
@@ -23,7 +19,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 # create non-root user
 RUN addgroup --system app && adduser --system --ingroup app app
 
-COPY --from=build /opt/venv /opt/venv
+COPY --from=build /usr/local /usr/local
 
 COPY src/ ./src
 # COPY .env ./
