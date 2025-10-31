@@ -1,7 +1,14 @@
 .PHONY: dev test docker lint docker-run build install
 
+# Detect OS (Windows_NT = Windows, otherwise assume Linux/mac)
+ifeq ($(OS),Windows_NT)
+    PYTHON := python
+else
+    PYTHON := python3
+endif
+
 dev:
-	python3 -m uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
+	$(PYTHON) -m uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 
 test:
 	pytest tests/test_basic_app.py --maxfail=1 -q
@@ -21,4 +28,4 @@ build:
 	pip install -r requirements.txt
 
 install:
-	python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
+	$(PYTHON) -m venv venv && source venv/bin/activate && pip install -r requirements.txt
