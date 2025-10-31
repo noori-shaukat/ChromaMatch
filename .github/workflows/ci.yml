@@ -21,9 +21,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          PYTHON_CMD=$(command -v python3 || command -v python)
-          $PYTHON_CMD -m pip install --upgrade pip
-          $PYTHON_CMD -m pip install --no-cache-dir -r requirements.txt pytest pytest-cov
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
 
 
       - name: Add src to PYTHONPATH
@@ -40,22 +40,12 @@ jobs:
       - name: Run tests
         run: pytest --cov=src --cov-fail-under=80
 
-      - name: Free disk space
-        run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          df -h
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          install: true
 
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
           push: false
           tags: chromamatch:${{ github.sha }}
-          load: true
 
 
   canary-deploy:
@@ -67,7 +57,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker build --no-cache -t chromamatch:${{ github.sha }} .
+          docker build -t chromamatch:${{ github.sha }} .
 
 
       - name: Run canary container
@@ -88,7 +78,6 @@ jobs:
           docker rm chroma-canary || true
 
       - name: Stop canary
-        if: always()
         run: |
           docker stop chroma-canary || true
           docker rm chroma-canary || true

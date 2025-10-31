@@ -23,6 +23,9 @@ lint:
 docker-run:
 	docker run --rm -p 8000:8000 chromamatch:latest
 
+build:
+	python -m pip install --upgrade pip
+	pip install -r requirements.txt
+
 install:
-	 $(PYTHON) -m venv venv
-	. venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+	$(PYTHON) -m venv venv && . venv/bin/activate && pip install -r requirements.txt
