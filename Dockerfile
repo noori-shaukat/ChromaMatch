@@ -22,7 +22,6 @@ COPY --from=build /usr/local/bin /usr/local/bin
 COPY src/ ./src
 # COPY .env ./
 
-
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:8000/health || exit 1
