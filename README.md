@@ -180,9 +180,9 @@ The key services used are **EC2**, **S3**, **Prometheus**, **Grafana**, and **ML
 
 1. **Launch an EC2 Instance**
    ```bash
-   # Example: Ubuntu 22.04 t2.medium
-   ssh -i <keypair>.pem ubuntu@<ec2-public-ip>
-  ```
+   # Ubuntu 22.04 t2.medium
+   ssh -i chromamatch-key.pem ubuntu@16.16.68.249
+    ```
 
 2. **Clone the Repository**
     ```bash
