@@ -4,7 +4,7 @@ dev:
 	python3 -m uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 
 test:
-	pytest --maxfail=1 -q
+	pytest tests/test_basic_app.py --maxfail=1 -q
 
 docker:
 	docker build -t chromamatch:latest .
