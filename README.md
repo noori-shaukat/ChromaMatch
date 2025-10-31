@@ -11,19 +11,15 @@ source venv/bin/activate
 pip install -r requirements.txt
 make dev
 
-# Architecture
-flowchart LR
-A[User selfie] --> B(Data ingestion)
-B --> C(Model training)
-C --> D[Model registry (MLflow)]
-D --> E[Inference API (FastAPI)]
-E --> F[Monitoring (Evidently, Prometheus/Grafana)]
-
 # Make targets
 make dev - run dev server
 make test - run tests
 make docker - build docker
 ```
+### Architecture
+Here is the architecture diagram for the Chromamatch project.
+
+![Architecture Diagram](monitoring/screenshots/architecturediagram.png)
 
 ### MLflow Model Registry
 
