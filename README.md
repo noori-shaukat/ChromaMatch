@@ -212,3 +212,4 @@ The key services used are **EC2**, **S3**, **Prometheus**, **Grafana**, and **ML
 ### Bonus
 
 Enabled Git-LFS for large dataset or model-artifacts
+Added docker-compose.yml file
