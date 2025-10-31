@@ -23,7 +23,7 @@ jobs:
         run: |
           PYTHON_CMD=$(command -v python3 || command -v python)
           $PYTHON_CMD -m pip install --upgrade pip
-          $PYTHON_CMD -m pip install -r requirements.txt pytest pytest-cov
+          $PYTHON_CMD -m pip install --no-cache-dir -r requirements.txt pytest pytest-cov
 
 
       - name: Add src to PYTHONPATH
@@ -59,7 +59,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t chromamatch:${{ github.sha }} .
+          docker build --no-cache -t chromamatch:${{ github.sha }} .
 
 
       - name: Run canary container
