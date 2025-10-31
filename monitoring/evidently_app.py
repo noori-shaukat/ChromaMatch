@@ -43,7 +43,7 @@ def generate_sample_data():
 generate_sample_data()
 
 
-@app.route("/evidently")
+@app.route("/")
 def generate_report():
     reference = pd.read_csv(REFERENCE_PATH)
     current = pd.read_csv(CURRENT_PATH)

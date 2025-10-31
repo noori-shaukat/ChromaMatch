@@ -1,0 +1,15 @@
+creation_timestamp: 1761903220288
+current_stage: None
+deployment_job_state: null
+description: ''
+last_updated_timestamp: 1761903220288
+model_id: m-54568083448a45c7a2b078362c4ccbd0
+name: ChromaMatch_Model
+run_id: 2040b3d5dda24f9db0e87fd7f92fbe77
+run_link: ''
+source: models:/m-54568083448a45c7a2b078362c4ccbd0
+status: READY
+status_message: null
+storage_location: mlflow-artifacts:/925257002503420755/models/m-54568083448a45c7a2b078362c4ccbd0/artifacts
+user_id: null
+version: 1

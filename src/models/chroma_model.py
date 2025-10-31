@@ -9,7 +9,6 @@ import numpy as np
 from sklearn.cluster import KMeans
 import math
 
-# We'll lazily load processor & model so importing the module won't download models immediately.
 _processor = None
 _model = None
 
