@@ -19,7 +19,7 @@ make docker - build docker
 ### Architecture
 Here is the architecture diagram for the Chromamatch project.
 
-![Architecture Diagram](monitoring/screenshots/architecturediagram.png)
+![Architecture Diagram](monitoring/screenshots/archdiagram.png)
 
 ### MLflow Model Registry
 
