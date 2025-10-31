@@ -208,3 +208,7 @@ The key services used are **EC2**, **S3**, **Prometheus**, **Grafana**, and **ML
 - *Evidently:* Run the Evidently app to monitor data drift and generate live dashboards.
 - *Prometheus:* Start the Prometheus metrics server at `http://16.16.68.249/:9090`.
 - *Grafana:* Open the Grafana dashboard at `http://16.16.68.249/:3000` to visualize real-time system metrics.
+
+### Bonus
+
+Enabled Git-LFS for large dataset or model-artifacts
