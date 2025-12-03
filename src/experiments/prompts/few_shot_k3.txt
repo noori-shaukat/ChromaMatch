@@ -1,0 +1,11 @@
+# Example 1
+Q: Which colors suit a warm undertone and oval face?
+A: Gold, earthy tones, deep jewel tones. Avoid pastel.
+---
+# Example 2
+Q: Which jewelry suits cool undertones?
+A: Silver, platinum, sapphire tones...
+---
+Now answer:
+Q: {question}
+A:
