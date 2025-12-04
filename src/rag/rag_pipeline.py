@@ -1,0 +1,89 @@
+# src/rag/rag_pipeline.py
+
+from src.models.chroma_model import analyze_image
+from src.rag.retriever import RAGRetriever
+from groq import Groq
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+
+class ChromaRAGPipeline:
+    def __init__(self):
+        self.retriever = RAGRetriever()
+
+    def ml_to_query(self, ml_output: dict):
+        return (
+            f"My skin tone is {ml_output['skin_tone']}, "
+            f"tone group {ml_output.get('tone_group')}, "
+            f"descriptor {ml_output.get('descriptor')}, "
+            f"undertone {ml_output['undertone']}, "
+            f"my eye color is {ml_output['eye_color']} and "
+            f"my hair color is {ml_output['hair_color']}. "
+            f"What colors in fashion, makeup, and clothing suit this profile?"
+        )
+
+    def generate_answer(self, context_docs, user_query):
+        context_str = "\n\n---DOCUMENT---\n\n".join(doc["text"] for doc in context_docs)
+
+        prompt = f"""
+You are a professional color analyst and stylist.
+
+USER PROFILE:
+{user_query}
+
+RELEVANT DOCUMENTS:
+{context_str}
+
+Using only the information from these documents, give highly personalized and accurate style + color advice.
+Focus on:
+- clothing colors
+- makeup colors
+- jewelry (gold/silver)
+- hair styling suggestions
+- seasonal color palette match
+"""
+
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=350,
+            temperature=0.3,
+        )
+
+        return response.choices[0].message.content
+
+    # ----------- NEW FUNCTION -----------
+    def recommend_from_predictions(self, ml_output: dict):
+        query = self.ml_to_query(ml_output)
+        docs = self.retriever.search(query, k=4)
+        answer = self.generate_answer(docs, query)
+
+        return {
+            "query_used": query,
+            "rag_answer": answer,
+            "retrieved_docs": docs,
+            "ml_predictions": ml_output,
+        }
+
+    def run(self, image_path: str):
+        # Step 1: Model prediction
+        ml_pred = analyze_image(image_path)
+
+        # Step 2: Convert into query
+        query = self.ml_to_query(ml_pred)
+
+        # Step 3: Retrieve documents
+        docs = self.retriever.search(query, k=4)
+
+        # Step 4: Generate final answer
+        answer = self.generate_answer(docs, query)
+
+        return {
+            "ml_prediction": ml_pred,
+            "rag_answer": answer,
+            "retrieved_docs": docs,
+        }
