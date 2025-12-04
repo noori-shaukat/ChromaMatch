@@ -59,25 +59,19 @@ Focus on:
         return response.choices[0].message.content
 
     # ----------- NEW FUNCTION -----------
-    def recommend_from_predictions(self, ml_output: dict):
-        # Step 0: Input validation
-        input_errors = self.guardrails.validate_input(ml_output)
-        if input_errors:
-            return {"errors": input_errors}
-
-        query = self.ml_to_query(ml_output)
+    def recommend_from_predictions(self, query: str):
         docs = self.retriever.search(query, k=5)
         answer = self.generate_answer(docs, query)
 
         output_violations = self.guardrails.moderate_output(answer)
         if output_violations:
             print("Guardrail violation:", output_violations)
+            answer = "I'm sorry, but I cannot provide a recommendation based on the provided information."
 
         return {
             "query_used": query,
             "rag_answer": answer,
             "retrieved_docs": docs,
-            "ml_predictions": ml_output,
             "guardrail_violations": output_violations,
         }
 

@@ -1,0 +1,20 @@
+<rail version="1">
+    <input>
+        <validations>
+            <validation type="profanity"/>
+            <validation type="unsafe_content">
+                <categories>violence,sexual,hate,self_harm</categories>
+            </validation>
+        </validations>
+    </input>
+    <output>
+        <type>text</type>
+        <validations>
+            <validation type="profanity"/>
+            <validation type="unsafe_content">
+                <categories>violence,sexual,hate,self_harm</categories>
+            </validation>
+        </validations>
+        <on_fail>error</on_fail>
+    </output>
+</rail>

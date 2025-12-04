@@ -1,7 +1,8 @@
 # src/api/main.py
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
+from src.safety.guardrails_filter import run_with_guardrails
 from src.rag.rag_pipeline import ChromaRAGPipeline
 from src.models.chroma_model import analyze_image
 import tempfile
@@ -55,13 +56,19 @@ async def recommend(preds: PredictionInput):
     # Convert pydantic model to dict
     preds_dict = preds.dict()
 
-    # Generate recommendations
-    result = rag_pipeline.recommend_from_predictions(preds_dict)
+    # (Guardrails validates INPUT as well)
+    user_query = rag_pipeline.ml_to_query(preds_dict)
 
-    if "errors" in result:
-        return {"status": "failed", "errors": result["errors"]}
+    # Apply Guardrails wrapper
+    try:
+        safe_response = run_with_guardrails(
+            rag_pipeline.recommend_from_predictions,  # your RAG fn
+            user_query,  # input for safety check
+        )
+        return safe_response
 
-    return result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 # ---------- HOME ----------

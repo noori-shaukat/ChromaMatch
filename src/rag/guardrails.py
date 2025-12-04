@@ -6,9 +6,9 @@ class ChromaGuardrails:
     def __init__(self, max_query_length=300):
         self.max_query_length = max_query_length
         self.forbidden_patterns = [
-            r"\b\d{3}-\d{2}-\d{4}\b",  # SSN
+            r"\b\d{5}-\d{7}-\d{1}\b",  # CNIC
             r"\b\d{16}\b",  # Credit card numbers
-            r"password|secret|api[_-]?key",  # Sensitive keywords
+            r"password|secret|api[_-]?key|CNIC|credit card",  # Sensitive keywords
         ]
 
     # ---- INPUT VALIDATION ----
@@ -26,6 +26,7 @@ class ChromaGuardrails:
     def moderate_output(self, rag_response: str):
         # Basic example: detect toxicity or offensive words
         forbidden_words = [
+            "violence",
             "hate",
             "kill",
             "stupid",
