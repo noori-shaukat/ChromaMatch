@@ -58,6 +58,9 @@ async def recommend(preds: PredictionInput):
     # Generate recommendations
     result = rag_pipeline.recommend_from_predictions(preds_dict)
 
+    if "errors" in result:
+        return {"status": "failed", "errors": result["errors"]}
+
     return result
 
 

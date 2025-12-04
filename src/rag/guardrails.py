@@ -25,7 +25,16 @@ class ChromaGuardrails:
     # ---- OUTPUT MODERATION ----
     def moderate_output(self, rag_response: str):
         # Basic example: detect toxicity or offensive words
-        forbidden_words = ["hate", "kill", "stupid", "idiot"]
+        forbidden_words = [
+            "hate",
+            "kill",
+            "stupid",
+            "idiot",
+            "dumb",
+            "crazy",
+            "ugly",
+            "fat",
+        ]
         violations = []
         for word in forbidden_words:
             if word.lower() in rag_response.lower():

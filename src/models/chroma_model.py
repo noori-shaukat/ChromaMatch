@@ -3,7 +3,7 @@
 # Exposes analyze_image(image_path) -> dict result.
 
 import torch
-from transformers import AutoImageProcessor, AutoModelForSemanticSegmentation
+from transformers import SegformerImageProcessor, AutoModelForSemanticSegmentation
 from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
@@ -17,7 +17,9 @@ def _ensure_model_loaded():
     global _processor, _model
     if _processor is None or _model is None:
         # you can change the HF model name if needed
-        _processor = AutoImageProcessor.from_pretrained("jonathandinu/face-parsing")
+        _processor = SegformerImageProcessor.from_pretrained(
+            "jonathandinu/face-parsing", use_fast=True
+        )
         _model = AutoModelForSemanticSegmentation.from_pretrained(
             "jonathandinu/face-parsing"
         )

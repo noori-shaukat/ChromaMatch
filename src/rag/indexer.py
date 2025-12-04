@@ -11,7 +11,7 @@ class RAGIndexer:
     def __init__(self, model_name="sentence-transformers/all-MiniLM-L6-v2"):
         self.embedder = SentenceTransformer(model_name)
 
-    def chunk(self, text, chunk_size=400):
+    def chunk(self, text, chunk_size=200):
         words = text.split()
         for i in range(0, len(words), chunk_size):
             yield " ".join(words[i : i + chunk_size])

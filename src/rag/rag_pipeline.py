@@ -5,6 +5,7 @@ from src.rag.retriever import RAGRetriever
 from groq import Groq
 import os
 from dotenv import load_dotenv
+from src.rag.guardrails import ChromaGuardrails
 
 load_dotenv()
 
@@ -14,6 +15,7 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 class ChromaRAGPipeline:
     def __init__(self):
         self.retriever = RAGRetriever()
+        self.guardrails = ChromaGuardrails()
 
     def ml_to_query(self, ml_output: dict):
         return (
@@ -58,15 +60,25 @@ Focus on:
 
     # ----------- NEW FUNCTION -----------
     def recommend_from_predictions(self, ml_output: dict):
+        # Step 0: Input validation
+        input_errors = self.guardrails.validate_input(ml_output)
+        if input_errors:
+            return {"errors": input_errors}
+
         query = self.ml_to_query(ml_output)
-        docs = self.retriever.search(query, k=4)
+        docs = self.retriever.search(query, k=5)
         answer = self.generate_answer(docs, query)
+
+        output_violations = self.guardrails.moderate_output(answer)
+        if output_violations:
+            print("Guardrail violation:", output_violations)
 
         return {
             "query_used": query,
             "rag_answer": answer,
             "retrieved_docs": docs,
             "ml_predictions": ml_output,
+            "guardrail_violations": output_violations,
         }
 
     def run(self, image_path: str):
