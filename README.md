@@ -1,20 +1,24 @@
 # ChromaMatch
-ChromaMatch is an AI-powered color and tone analysis system that identifies skin tones, undertones, and personalized fashion recommendations from selfies. The system integrates MLOps components: MLflow for model tracking, Evidently for drift monitoring, Prometheus & Grafana for metrics visualization — all deployed on AWS EC2 with data stored in S3.
+ChromaMatch is an AI-powered color and tone analysis system that identifies skin tones, undertones, and personalized fashion recommendations from selfies. The system integrates MLOps components: - **Computer vision** for skin tone, undertone, eye color, hair color extraction
+- **RAG (Retrieval-Augmented Generation)** for personalized fashion, makeup, jewelry, and seasonal palette recommendations
+- **MLOps** tooling including MLflow, Evidently, Prometheus, and Grafana
+- **Cloud deployment** on AWS EC2 + S3
 
 
 ## Quickstart
 ```bash
-git clone https://github.com/<your>/ChromaMatch.git
+git clone https://github.com/noori-shaukat/ChromaMatch.git
 cd ChromaMatch
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+make install
 make dev
 
 # Make targets
-make dev - run dev server
-make test - run tests
-make docker - build docker
+make dev - Run FastAPI server
+make test - Run tests
+make docker - Build Docker image
+make docker-run - Run container
+make build-index - Build FAISS index
+make rag - Run full RAG pipeline (reproducibility)
 ```
 ### Architecture
 Here is the architecture diagram for the Chromamatch project.
