@@ -1,10 +1,14 @@
 .PHONY: dev test docker lint docker-run build install
 
-# Detect OS (Windows_NT = Windows, otherwise assume Linux/mac)
+# Platform-compatible Python
 ifeq ($(OS),Windows_NT)
-    PYTHON := python
+    PYTHON := py -3.10
+    ACTIVATE := venv/Scripts/activate
+    PIP := venv/Scripts/pip
 else
-    PYTHON := python3
+    PYTHON := python3.10
+    ACTIVATE := source venv/bin/activate
+    PIP := venv/bin/pip
 endif
 
 dev:
@@ -23,9 +27,20 @@ lint:
 docker-run:
 	docker run --rm -p 8000:8000 chromamatch:latest
 
-build:
-	python -m pip install --upgrade pip
-	pip install -r requirements.txt
+venv:
+	$(PYTHON) -m venv venv
 
-install:
-	$(PYTHON) -m venv venv && . venv/bin/activate && pip install -r requirements.txt
+install: venv
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements.txt
+
+build-index: install
+	$(PYTHON) -m src.rag.indexer
+
+rag: install build-index
+	$(PYTHON) - <<EOF
+from src.rag.rag_pipeline import ChromaRAGPipeline
+pipe = ChromaRAGPipeline()
+result = pipe.run("sample.jpg")
+print(result)
+EOF
