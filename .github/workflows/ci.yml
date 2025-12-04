@@ -12,12 +12,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
 
       - name: Install dependencies
         run: |
@@ -25,10 +23,8 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
-
       - name: Add src to PYTHONPATH
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
-
 
       - name: Lint (ruff & black)
         run: |
@@ -36,10 +32,8 @@ jobs:
           ruff check src tests || true
           black --check src tests || true
 
-
       - name: Run tests
         run: pytest --cov=src --cov-fail-under=80
-
 
       - name: Build Docker image
         uses: docker/build-push-action@v5
@@ -59,15 +53,12 @@ jobs:
         run: |
           docker build -t chromamatch:${{ github.sha }} .
 
-
       - name: Run canary container
         run: |
           docker run -d --name chroma-canary -e CANARY=true -p 9000:8000 chromamatch:${{ github.sha }}
 
-
       - name: Sleep for server start
         run: sleep 5
-
 
       - name: Acceptance tests (golden queries)
         run: |
