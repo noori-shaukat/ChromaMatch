@@ -101,7 +101,7 @@ The **ChromaMatch API** is built using **FastAPI**, which automatically generate
 ### Analyze Image
 
 **Endpoint:** `POST /analyze`
-**Description:** Upload an image to receive AI-generated insights such as skin tone, undertone, and personalized style recommendations.
+**Description:** Upload an image to receive AI-generated insights such as skin tone, undertone, and hair color.
 
 **Example Response:**
 
@@ -113,10 +113,12 @@ curl.exe -X POST "http://127.0.0.1:8000/analyze"
 
 ```json
 {
-  "skin_tone": "warm",
-  "undertone": "neutral",
-  "face_shape": "oval",
-  "recommendation": "Gold jewelry and earth tones suit you best."
+  "skin_tone": "MST 4",
+  "tone_group": "Medium",
+  "descriptor": "Sand / Light Medium",
+  "undertone": "Warm",
+  "eye_color": ["Brown"],
+  "hair_color": "Dark Brown"
 }
 ```
 Example:
