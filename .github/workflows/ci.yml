@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 on:
   push:
     branches: [ main ]
@@ -21,26 +21,31 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-cov
+          pip install pytest pytest-cov ruff black
 
       - name: Add src to PYTHONPATH
         run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
 
+      # ---- Lint ----
       - name: Lint (ruff & black)
         run: |
-          pip install ruff black
-          ruff check src tests || true
-          black --check src tests || true
+          ruff check src tests
+          black --check src tests
 
-      - name: Run tests
+      # ---- Run tests ----
+      - name: Run tests with coverage
         run: pytest --cov=src --cov-fail-under=80
 
+      # ---- CI-safe prompt evaluation ----
+      - name: Run prompt evaluation (CI mock)
+        run: python src/experiments/eval_prompts_ci.py
+
+      # ---- Docker build ----
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
           push: false
           tags: chromamatch:${{ github.sha }}
-
 
   canary-deploy:
     needs: lint-test-build
@@ -49,10 +54,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build image
+      # ---- Build Docker image ----
+      - name: Build Docker image
         run: |
           docker build -t chromamatch:${{ github.sha }} .
 
+      # ---- Run canary container ----
       - name: Run canary container
         run: |
           docker run -d --name chroma-canary -e CANARY=true -p 9000:8000 chromamatch:${{ github.sha }}
@@ -60,15 +67,17 @@ jobs:
       - name: Sleep for server start
         run: sleep 5
 
-      - name: Acceptance tests (golden queries)
+      # ---- Acceptance tests (health check) ----
+      - name: Canary health check
         run: |
           set -e
-          # basic health checks
-          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9000/health)
-          if [ "$status" -ne 200 ]; then echo "health failed: $status"; exit 1; fi
-          docker rm chroma-canary || true
-
-      - name: Stop canary
-        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9000/health || echo "000")
+          if [ "$status" -ne 200 ]; then
+            echo "Canary health check failed: $status"
+            docker logs chroma-canary
+            docker stop chroma-canary || true
+            docker rm chroma-canary || true
+            exit 1
+          fi
           docker stop chroma-canary || true
           docker rm chroma-canary || true
