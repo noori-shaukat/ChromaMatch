@@ -5,9 +5,7 @@ from groq import Groq
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import load_dotenv
-import sacrebleu
 import mlflow
-from collections import defaultdict
 
 # -------------------------
 # Config / Load API Key
