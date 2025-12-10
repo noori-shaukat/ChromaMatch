@@ -9,8 +9,11 @@ from src.rag.guardrails import ChromaGuardrails
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+def get_client():
+    from groq import Groq
+    return Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+client = get_client()
 
 class ChromaRAGPipeline:
     def __init__(self):
