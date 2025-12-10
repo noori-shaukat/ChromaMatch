@@ -5,9 +5,7 @@ from groq import Groq
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import load_dotenv
-import sacrebleu
 import mlflow
-from collections import defaultdict
 
 # -------------------------
 # Config / Load API Key
@@ -34,12 +32,14 @@ PROMPTS = {
     "advanced": os.path.join(PROMPT_DIR, "advanced_cot.txt"),
 }
 
+
 # -------------------------
 # Load prompts
 # -------------------------
 def load_prompt(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
+
 
 prompt_templates = {name: load_prompt(p) for name, p in PROMPTS.items()}
 
@@ -50,6 +50,7 @@ eval_samples = []
 with open(EVAL_FILE, "r", encoding="utf-8") as f:
     for line in f:
         eval_samples.append(json.loads(line.strip()))
+
 
 # -------------------------
 # LLM Call Helper
@@ -106,7 +107,9 @@ for prompt_name, template in prompt_templates.items():
             )
 
             # Fill template – we support {FEATURES} placeholder (case-insensitive)
-            final_prompt = template.replace("{FEATURES}", features_text).replace("{features}", features_text)
+            final_prompt = template.replace("{FEATURES}", features_text).replace(
+                "{features}", features_text
+            )
 
             # Call LLM
             output = call_llm(final_prompt)
@@ -118,12 +121,14 @@ for prompt_name, template in prompt_templates.items():
 
             sim_scores.append(sim)
 
-            per_example_results.append({
-                "sample_id": sample_id,
-                "prediction": output,
-                "ground_truth": ground_truth,
-                "similarity": sim,
-            })
+            per_example_results.append(
+                {
+                    "sample_id": sample_id,
+                    "prediction": output,
+                    "ground_truth": ground_truth,
+                    "similarity": sim,
+                }
+            )
 
             print(f"  {sample_id}: sim={sim:.3f}")
 
@@ -145,7 +150,7 @@ for prompt_name, template in prompt_templates.items():
         overall_summary[prompt_name] = {
             "avg_cosine_similarity": avg_sim,
             "n": len(per_example_results),
-            "results_file": out_file
+            "results_file": out_file,
         }
 
 # -------------------------

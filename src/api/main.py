@@ -11,6 +11,7 @@ import os
 import mlflow
 from prometheus_fastapi_instrumentator import Instrumentator
 from monitoring.run_evidently import generate_drift_report
+
 mlflow.set_tracking_uri("http://13.60.180.47:5000")
 mlflow.set_experiment("ChromaMatchExperiment")
 app = FastAPI(title="ChromaMatch")
@@ -18,10 +19,13 @@ app = FastAPI(title="ChromaMatch")
 Instrumentator().instrument(app).expose(app)
 rag_pipeline = ChromaRAGPipeline()
 
+
 @app.get("/")
 def root_dashboard():
     report_path = generate_drift_report()
     return FileResponse(report_path, media_type="text/html")
+
+
 # ---------- HEALTH ----------
 @app.get("/health")
 def health_check():
@@ -74,7 +78,6 @@ async def recommend(preds: PredictionInput):
     # Convert pydantic model to dict
     preds_dict = preds.dict()
 
-
     # (Guardrails validates INPUT as well)
     user_query = rag_pipeline.ml_to_query(preds_dict)
 
@@ -97,6 +100,7 @@ async def recommend(preds: PredictionInput):
         except Exception as e:
             mlflow.log_param("error", str(e))
             raise HTTPException(status_code=400, detail=str(e))
+
 
 # ---------- HOME ----------
 @app.get("/")

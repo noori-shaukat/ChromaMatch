@@ -35,7 +35,13 @@ for fname in files:
                     except ValueError:
                         print("Enter integers 1-5.")
 
-                scores.append({"sample_id": obj["sample_id"], "factuality": factual, "helpfulness": helpful})
+                scores.append(
+                    {
+                        "sample_id": obj["sample_id"],
+                        "factuality": factual,
+                        "helpfulness": helpful,
+                    }
+                )
 
         # Save qualitative scores
         qpath = os.path.join(RESULT_DIR, f"{prompt_name}_qualitative.json")
@@ -48,4 +54,6 @@ for fname in files:
         avg_help = sum([s["helpfulness"] for s in scores]) / len(scores)
         mlflow.log_metric("avg_factuality", avg_fact)
         mlflow.log_metric("avg_helpfulness", avg_help)
-        print(f"Logged qualitative metrics for {prompt_name}: factual={avg_fact:.2f}, helpful={avg_help:.2f}")
+        print(
+            f"Logged qualitative metrics for {prompt_name}: factual={avg_fact:.2f}, helpful={avg_help:.2f}"
+        )
