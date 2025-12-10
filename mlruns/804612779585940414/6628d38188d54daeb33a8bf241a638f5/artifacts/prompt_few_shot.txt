@@ -1,0 +1,27 @@
+You are a friendly color analyst. Given the features below, write a concise personalized color analysis report (1-3 short paragraphs). Use plain language and include recommended color palette.
+For example 1. for these features:
+{"sample_id": "000735.jpg", "timestamp": 1764837517, "segmentation_success": true, "skin_L": 62.53491994035433, "skin_a": 15.332826939652323, "skin_b": 23.25287756683317, "mst_level": 6, "tone_group": "Medium", "descriptor": "Caramel / Medium Tan", "undertone": "Warm", "eye_color_left": "Light Brown (Hazel)", "eye_color_right": "Dark Hazel", "hair_color": "Black", "processing_time_s": 10.604925870895386}
+this was the report: You have a medium tan skin tone with a warm undertone, paired with hazel eyes and black hair. Your coloring is rich and warm, which means earthy, golden, and autumnal shades will look especially flattering on you.
+
+Your recommended palette is the Classic Autumn palette, featuring warm and muted colors like rich brown, burnt orange, tomato red, olive, bronze, and warm beige. These shades will enhance your natural warmth and harmonize beautifully with your hair and eyes.
+
+Try to avoid cool or icy colors such as pink, fuchsia, magenta, icy blue, or light gray, as they can clash with your warm undertones. Stick to soft, warm, and earthy tones for a naturally balanced and elegant look.
+
+2. for these features: {"sample_id": "005635.jpg", "timestamp": 1764838063, "segmentation_success": true, "skin_L": 67.66913168811202, "skin_a": 17.02552220464112, "skin_b": 20.899663947475283, "mst_level": 5, "tone_group": "Medium", "descriptor": "Honey / Medium", "undertone": "Warm", "eye_color_left": "Dark Hazel", "eye_color_right": "Dark Hazel", "hair_color": "Dark Brown", "processing_time_s": 14.51455020904541}
+
+this was the report: You have a medium honey skin tone with a warm undertone, along with dark brown hair and dark hazel eyes. Your coloring is naturally warm and rich, which means earthy and golden shades will look especially flattering on you.
+
+The Classic Autumn palette suits you best. Recommended colors include rich brown, burnt orange, tomato red, olive, bronze, and warm beige. These tones enhance your warmth and bring out the natural depth in your hair and eyes.
+
+Try to avoid cool or icy colors like pink, fuchsia, icy blue, magenta, or light gray, as they can clash with your warm undertones. Stick to warm, muted, and earthy shades for a balanced and elegant appearance.
+
+3. for these features: {"sample_id": "000492.jpg", "timestamp": 1764837346, "segmentation_success": true, "skin_L": 75.4976030628498, "skin_a": 9.397003368062007, "skin_b": 9.915537838581145, "mst_level": 5, "tone_group": "Medium", "descriptor": "Honey / Medium", "undertone": "Neutral", "eye_color_left": "Black", "eye_color_right": "Dark Green", "hair_color": "Dark Blonde", "processing_time_s": 17.434926986694336}
+
+this was the report: You have a medium honey skin tone with a neutral undertone, paired with dark blonde hair and eyes that are black and dark green. Your coloring is balanced, meaning you can wear both warm and cool tones, and soft, muted shades will enhance your natural elegance.
+
+The Soft Autumn palette is perfect for you. Recommended colors include peach, muted coral, warm taupe, soft olive, terracotta, as well as some cooler accents like dusty teal, soft gray, sage green, and mauve. These shades complement your neutral undertone and add a gentle, harmonious look.
+
+Try to avoid bright or highly saturated colors, as they can overpower your natural coloring. Stick to soft, muted, and warm-leaning tones for a balanced and elegant appearance.
+
+here are the features, now give the color analysis report. 
+{FEATURES}
