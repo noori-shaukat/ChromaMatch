@@ -23,9 +23,9 @@ embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 # -------------------------
 # Paths
 # -------------------------
-PROMPT_DIR = "experiments/prompts"
+PROMPT_DIR = "src/experiments/prompts"
 EVAL_FILE = "data/eval.jsonl"
-RESULT_DIR = "experiments/results"
+RESULT_DIR = "src/experiments/results"
 os.makedirs(RESULT_DIR, exist_ok=True)
 
 PROMPTS = {
@@ -67,6 +67,7 @@ def call_llm(prompt):
 # -------------------------
 # MLflow experiment
 # -------------------------
+mlflow.set_tracking_uri("http://13.60.180.47:5000")
 mlflow.set_experiment("prompt_comparison")
 
 # -------------------------

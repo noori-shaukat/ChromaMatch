@@ -3,7 +3,7 @@ import json
 import os
 import mlflow
 
-RESULT_DIR = "experiments/results"
+RESULT_DIR = "src/experiments/results"
 files = [f for f in os.listdir(RESULT_DIR) if f.endswith("_results.jsonl")]
 
 print("Found result files:", files)
@@ -15,6 +15,7 @@ for fname in files:
 
     # Start MLflow run
     mlflow.set_experiment("prompt_comparison")
+    mlflow.set_tracking_uri("http://13.60.180.47:5000")
     with mlflow.start_run(run_name=f"qualitative_{prompt_name}"):
         scores = []
         with open(path, "r", encoding="utf-8") as f:

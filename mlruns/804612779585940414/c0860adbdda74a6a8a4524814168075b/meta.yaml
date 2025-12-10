@@ -1,0 +1,14 @@
+artifact_uri: file:///home/ubuntu/ChromaMatch/mlruns/804612779585940414/c0860adbdda74a6a8a4524814168075b/artifacts
+end_time: 1765376608511
+entry_point_name: ''
+experiment_id: '804612779585940414'
+lifecycle_stage: active
+run_id: c0860adbdda74a6a8a4524814168075b
+run_name: baseline
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1765376600593
+status: 3
+tags: []
+user_id: ubuntu

@@ -7,9 +7,13 @@ from src.rag.rag_pipeline import ChromaRAGPipeline
 from src.models.chroma_model import analyze_image
 import tempfile
 import os
-
+import mlflow
+from prometheus_fastapi_instrumentator import Instrumentator
+mlflow.set_tracking_uri("http://13.60.180.47:5000")
+mlflow.set_experiment("ChromaMatchExperiment")
 app = FastAPI(title="ChromaMatch")
 
+Instrumentator().instrument(app).expose(app)
 rag_pipeline = ChromaRAGPipeline()
 
 
@@ -30,8 +34,17 @@ async def analyze(file: UploadFile = File(...)):
     tmp = tempfile.NamedTemporaryFile(delete=False)
     tmp.write(await file.read())
     tmp.close()
+    with mlflow.start_run(run_name="analyze_image"):
+        mlflow.log_param("uploaded_filename", file.filename)
 
-    result = analyze_image(tmp.name)
+        result = analyze_image(tmp.name)
+
+        # Log model output fields (if they exist)
+        for key, value in result.items():
+            if isinstance(value, (int, float, str)):
+                mlflow.log_param(f"result_{key}", value)
+
+        mlflow.log_artifact(tmp.name)  # store uploaded image
     os.unlink(tmp.name)
     return result
 
@@ -56,20 +69,29 @@ async def recommend(preds: PredictionInput):
     # Convert pydantic model to dict
     preds_dict = preds.dict()
 
+
     # (Guardrails validates INPUT as well)
     user_query = rag_pipeline.ml_to_query(preds_dict)
 
     # Apply Guardrails wrapper
-    try:
-        safe_response = run_with_guardrails(
-            rag_pipeline.recommend_from_predictions,  # your RAG fn
-            user_query,  # input for safety check
-        )
-        return safe_response
+    with mlflow.start_run(run_name="recommendation"):
+        # log input params
+        mlflow.log_params({k: str(v) for k, v in preds_dict.items()})
 
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        try:
+            safe_response = run_with_guardrails(
+                rag_pipeline.recommend_from_predictions,
+                user_query,
+            )
 
+            # log simple metric: length of response
+            mlflow.log_metric("response_length", len(str(safe_response)))
+
+            return safe_response
+
+        except Exception as e:
+            mlflow.log_param("error", str(e))
+            raise HTTPException(status_code=400, detail=str(e))
 
 # ---------- HOME ----------
 @app.get("/")
