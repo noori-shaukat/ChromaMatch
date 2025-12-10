@@ -2,7 +2,6 @@
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
-from fastapi.responses import FileResponse
 from src.safety.guardrails_filter import run_with_guardrails
 from src.rag.rag_pipeline import ChromaRAGPipeline
 from src.models.chroma_model import analyze_image
@@ -10,18 +9,13 @@ import tempfile
 import os
 import mlflow
 from prometheus_fastapi_instrumentator import Instrumentator
-from monitoring.run_evidently import generate_drift_report
 mlflow.set_tracking_uri("http://13.60.180.47:5000")
 mlflow.set_experiment("ChromaMatchExperiment")
 app = FastAPI(title="ChromaMatch")
 
-Instrumentator().instrument(app).expose(app)
 rag_pipeline = ChromaRAGPipeline()
 
-@app.get("/")
-def root_dashboard():
-    report_path = generate_drift_report()
-    return FileResponse(report_path, media_type="text/html")
+
 # ---------- HEALTH ----------
 @app.get("/health")
 def health_check():
