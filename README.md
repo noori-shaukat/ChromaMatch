@@ -1,115 +1,122 @@
-# ChromaMatch
-ChromaMatch is an AI-powered color and tone analysis system that identifies skin tones, undertones, and personalized fashion recommendations from selfies. The system integrates MLOps components: - **Computer vision** for skin tone, undertone, eye color, hair color extraction
-- **RAG (Retrieval-Augmented Generation)** for personalized fashion, makeup, jewelry, and seasonal palette recommendations
-- **MLOps** tooling including MLflow, Evidently, Prometheus, and Grafana
-- **Cloud deployment** on AWS EC2 + S3
+# 🎨 ChromaMatch
 
+**AI-powered color analysis & personalized fashion recommendations using Computer Vision + RAG + MLOps + Cloud.**
 
-## Quickstart
+ChromaMatch detects **skin tone**, **undertone**, **eye color**, **hair color**, and generates highly personalized recommendations using a **Retrieval-Augmented Generation (RAG)** pipeline.
+The project integrates **MLOps**, **LLMOps**, **Prompt Engineering**, **Cloud Deployment**, **Monitoring**, and **Guardrails**.
+
+---
+
+# 🚀 Quickstart
+
 ```bash
 git clone https://github.com/noori-shaukat/ChromaMatch.git
 cd ChromaMatch
 make install
 make dev
-
-# Make targets
-make dev - Run FastAPI server
-make test - Run tests
-make docker - Build Docker image
-make docker-run - Run container
-make build-index - Build FAISS index
-make rag - Run full RAG pipeline (reproducibility)
 ```
-### Architecture
-Here is the architecture diagram for the Chromamatch project.
+
+### Common Make Targets
+
+| Command            | Description                  |
+| ------------------ | ---------------------------- |
+| `make dev`         | Run FastAPI server           |
+| `make test`        | Run tests                    |
+| `make docker`      | Build Docker image           |
+| `make docker-run`  | Run container                |
+| `make build-index` | Build FAISS RAG index        |
+| `make rag`         | Full RAG pipeline end-to-end |
+
+---
+
+# 🧱 System Architecture
 
 ![Architecture Diagram](monitoring/screenshots/archdiagram.png)
 
-### MLflow Model Registry
+---
 
-The ChromaMatch v1 model is tracked and versioned using MLflow.
+# 🧪 MLflow Model Registry
 
-- **Experiment name:** ChromaMatch
-- **Model name:** ChromaMatch_Model
-- **Version:** v1
-- **MLflow UI:**
+* **Experiment:** `ChromaMatch`
+* **Model Name:** `ChromaMatch_Model`
+* **Version:** v1
 
-Here is the MLFlow screenshot to show the experiment for v1 model
 ![MLFlow](monitoring/screenshots/mlflow.png)
-### Evidently Data Drift Report
-Here is the data drift dashboard created on Evidently using dummy data
+
+---
+
+# 🧾 Evidently Data Drift Dashboard
 
 ![Data Drift Report](monitoring/screenshots/data_drift_report.png)
 
-### Prometheus Metrics tracking
+---
 
-Prometheus was set up to monitor key metrics including CPU usage, memory consumption, disk I/O, and simulated GPU utilization
-
-Here is the snapshot to show the metric tracking
+# 📈 Prometheus Metrics Tracking
 
 ![Prometheus Monitoring](monitoring/screenshots/prometheus.png)
 
-### Grafana Monitoring Dashboard
-Grafana is set up to visualize real-time system metrics (CPU, memory, disk, etc.) collected by Prometheus through the Windows Exporter.
+---
 
-- **Data Source:** Prometheus (`http://localhost:9090`)
-- **Dashboard:** Official Windows Exporter Dashboard (ID: 14694)
-- **Access URL:** [http://localhost:3000](http://localhost:3000)
-
-Here is the screenshot of the Grafana dashboard displaying live system metrics.
+# 📉 Grafana Real-Time Dashboard
 
 ![Grafana Dashboard](monitoring/screenshots/grafana.png)
 
-### Pre-commit Hooks Setup
-To maintain clean, consistent, and secure code, pre-commit hooks were configured and verified.
+---
 
-**Active hooks:**
-- `trailing-whitespace`
-- `end-of-file-fixer`
-- `detect-secrets`
-- `black`
-- `ruff`
+# 🧹 Pre-commit Hooks
 
-All hooks pass successfully when running:
+Configured to maintain code quality:
+
+* `trailing-whitespace`
+* `end-of-file-fixer`
+* `detect-secrets`
+* `black`
+* `ruff`
+
+Run:
+
 ```bash
 pre-commit run --all-files
 ```
 
-## API Documentation
+---
 
-The **ChromaMatch API** is built using **FastAPI**, which automatically generates interactive documentation for developers to explore and test endpoints.
+# 📡 API Documentation
 
-### Access the Auto-Generated Docs
+FastAPI auto-generates live documentation.
 
-- **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-  → Interactive interface for sending requests and viewing responses.
-- **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-  → Clean, reference-style API documentation view.
+### Swagger UI
+
+👉 [http://13.60.180.47:8000/docs](http://13.60.180.47:8000/docs)
+
+### ReDoc
+
+👉 [http://13.60.180.47:8000/redoc](http://13.60.180.47:8000/redoc)
 
 ---
 
-### Health Check
-**Endpoint:** `GET /health`
-**Description:** Confirms that the API is running and reachable.
+## `/health`
 
-**Example Response:**
+Check server status.
+
 ```json
-{
-  "status": "ok"
-}
+{"status": "ok"}
 ```
-### Analyze Image
 
-**Endpoint:** `POST /analyze`
-**Description:** Upload an image to receive AI-generated insights such as skin tone, undertone, and hair color.
+---
 
-**Example Response:**
+## `/analyze` – (POST)
 
-```bash
-curl.exe -X POST "http://127.0.0.1:8000/analyze"
-     -F "file=@C:\Users\dell\Downloads\MLOPS\ChromaMatch\monitoring\test_images\person1.jpg" `
-     -H "accept: application/json"
-```
+Upload an image → receive:
+
+* Skin Tone
+* Tone Group
+* Descriptor
+* Undertone
+* Eye Color
+* Hair Color
+
+Example:
 
 ```json
 {
@@ -121,101 +128,251 @@ curl.exe -X POST "http://127.0.0.1:8000/analyze"
   "hair_color": "Dark Brown"
 }
 ```
-Example:
+
 ![Swagger UI](monitoring/screenshots/swagger.png)
 
-## FAQ
+---
 
-### Q1. MLflow or Evidently dashboard not opening?
+# 🧠 D1 — Prompt Engineering Workflow
 
-Make sure ports 5000 (MLflow) and 7000 (Evidently) are open in your EC2 Security Group.
+This project includes a full experimental pipeline for **prompt robustness testing**.
 
-### Q2. “Address already in use” error when running MLflow or FastAPI?
+### 📁 Directory Structure
 
-Run:
-```bash
-sudo lsof -i :5000
-sudo kill -9 <PID>
+```
+experiments/
+ ├── prompts/
+ │    ├── baseline_zeroshot.txt
+ │    ├── few_shot.txt
+ │    └── advanced_cot.txt
+ ├── results/
+ ├── eval_prompts.py
+ └── qualitative_score.py
+ data/
+ └── eval.jsonl
 ```
 
-### Q3. Docker build fails with “No space left on device”?
+### Required Prompt Strategies (Implemented)
 
-This happens in GitHub Actions free runners. Add this before installing dependencies in your workflow
+| Strategy                 | Description                        |
+| ------------------------ | ---------------------------------- |
+| **Baseline Zero-shot**   | Minimal prompt → direct generation |
+| **Few-shot (k=3 & k=5)** | Example-driven recommendations     |
+| **Advanced**             | Chain-of-Thought (CoT) reasoning   |
 
-```bash
-sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android
-```
+### Evaluation Includes:
 
-### Q4. “ModuleNotFoundError: No module named src”
-Always run commands from the project root (same directory as src/).
+#### ✔ Quantitative Metrics
 
-### Q5. How do I access dashboards on AWS EC2?
-MLflow: ttp://16.16.68.249/:5000
+* **Cosine Similarity (SentenceTransformers)**
+* Optional BLEU / ROUGE via `sacrebleu`
 
-Evidently: http://16.16.68.249/:7000/evidently
+#### ✔ Qualitative Metrics (Human-in-the-loop)
 
-Grafana: http://16.16.68.249/:3000
+Users manually score:
 
-Prometheus: http://16.16.68.249/:9090
+* **Factuality (1–5)**
+* **Helpfulness (1–5)**
 
-## ☁️ Cloud Deployment
+#### ✔ MLflow Logging
 
-### Overview
-ChromaMatch is deployed on **AWS Cloud** to ensure scalability, availability, and smooth MLOps integration.
-The key services used are **EC2**, **S3**, **Prometheus**, **Grafana**, and **MLflow** — each serving a specific part of the end-to-end machine learning workflow.
+All experiment runs logged automatically:
+
+👉 [http://13.60.180.47:5000/](http://13.60.180.47:5000/)
+
+### Final Deliverable
+
+A full **prompt_report.md** summarizing:
+
+* Each prompt strategy
+* Strengths & weaknesses
+* Quantitative results
+* Qualitative scores
+* Failure cases
+* Best performing prompt
 
 ---
 
-### 🧩 Services Used
+# 🔍 D2 — RAG (Retrieval-Augmented Generation) Pipeline
 
-| Service | Purpose | Reason for Use |
-|----------|----------|----------------|
-| **Amazon EC2** | Hosts the FastAPI inference server, MLflow tracking server, and monitoring tools (Evidently, Prometheus, Grafana). | Provides on-demand compute with full control over the environment. |
-| **Amazon S3** | Stores datasets, trained model artifacts, and logs used by MLflow for model versioning. | Durable and cost-effective object storage, ideal for ML workflows. |
-| **MLflow** | Tracks experiments, logs metrics, and registers trained models. | Enables model versioning and reproducible ML experimentation. |
-| **Evidently AI** | Monitors data and model drift on live inference data. | Ensures the deployed model remains accurate over time. |
-| **Prometheus + Grafana** | Collects and visualizes infrastructure metrics (CPU, memory, disk I/O). | Provides real-time system monitoring and alerting for deployed services. |
+### 📁 Code Structure
+
+```
+src/rag/
+ ├── ingest.py        # Web scraping + document cleaning
+ ├── vector_store.py  # FAISS index builder + persistence
+ ├── retriever.py     # Query to vector search
+ ├── rag_pipeline.py  # Core pipeline
+ └── recommend.py     # Endpoint logic
+```
+
+### RAG Flow
+
+1. Scrape color/fashion websites
+2. Clean + chunk documents
+3. Encode using SentenceTransformers
+4. Store vectors in **FAISS**
+5. Retrieve top-k matches
+6. Feed retrieved chunks + user skin profile → LLM
+7. Generate personalized recommendations
+
+### Reproducibility
+
+```bash
+make rag
+```
+
+### RAG Architecture Diagram
+
+Included in repo.
 
 ---
 
-### ⚙️ How to Reproduce the Setup
+# 🛡️ D3 — Guardrails & Safety Mechanisms
 
-1. **Launch an EC2 Instance**
-   ```bash
-   # Ubuntu 22.04 t2.medium
-   ssh -i chromamatch-key.pem ubuntu@16.16.68.249
-    ```
+Guardrails applied at **input**, **retrieval**, and **output** stages.
 
-2. **Clone the Repository**
-    ```bash
-    git clone https://github.com/noori-shaukat/ChromaMatch.git
-    cd ChromaMatch
-    ```
+### Implemented Policies
 
-3. **Set up Virtual Environment**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    ```
+### 1️⃣ Input Validation
 
-4. **Run MLflow Server**
-    ```bash
-    mlflow server --host 0.0.0.0 --port 5000 \
-    --backend-store-uri sqlite:///mlflow.db \
-    --default-artifact-root s3://chromamatch-artifacts/
-    ```
-5. **Deploy Fast-API App**
-    ```bash
-    uvicorn src.api.main:app --host 0.0.0.0 --port 8000
-    ```
+* PII detection
+* Prompt injection filtering
+* Image safety validation
 
-6. **Set up Monitoring**
-- *Evidently:* Run the Evidently app to monitor data drift and generate live dashboards.
-- *Prometheus:* Start the Prometheus metrics server at `http://16.16.68.249/:9090`.
-- *Grafana:* Open the Grafana dashboard at `http://16.16.68.249/:3000` to visualize real-time system metrics.
+### 2️⃣ Output Moderation
 
-### Bonus
+* Toxicity thresholding
+* Hallucination suppression
+* Confidence scoring
 
-Enabled Git-LFS for large dataset or model-artifacts
-Added docker-compose.yml file
+All guardrail violations logged to:
+
+* **Prometheus**
+* **MLflow**
+
+---
+
+# 📉 D4 — LLM Evaluation & Monitoring
+
+Monitored in real time:
+
+* Latency
+* Token usage
+* Cost
+* Guardrail violations
+* Retrieval scores
+* System resource usage
+
+### Dashboards
+
+| Service    | URL                                                    |
+| ---------- | ------------------------------------------------------ |
+| MLflow     | [http://13.60.180.47:5000/](http://13.60.180.47:5000/) |
+| Grafana    | [http://13.60.180.47:3000/](http://13.60.180.47:3000/) |
+| Prometheus | [http://13.60.180.47:9090/](http://13.60.180.47:9090/) |
+| Evidently  | [http://13.60.180.47:7000/](http://13.60.180.47:7000/) |
+
+---
+
+# ☁️ D7 — Cloud Integration (Required)
+
+ChromaMatch uses **AWS** cloud services:
+
+| Cloud Service         | Purpose                                                 |
+| --------------------- | ------------------------------------------------------- |
+| **S3**                | Store FAISS index + documents + MLflow artifacts        |
+| **EC2**               | Host FastAPI, RAG pipeline, MLflow, Grafana, Prometheus |
+| **Lambda (Optional)** | Periodic evaluation of RAG pipeline                     |
+
+### Deployment Includes
+
+* Full EC2 setup
+* S3 integration
+* Open ports for monitoring stack
+* Configuration screenshots in repo
+
+---
+
+# 🔐 D8 — Security & Compliance
+
+### SECURITY.md covers:
+
+* Prompt injection defenses
+* Safe LLM output handling
+* Privacy rules
+* PII filtering (image & text)
+
+### Dependency Scanning
+
+```bash
+pip-audit
+```
+
+CI fails if critical CVEs found.
+
+### Responsible AI
+
+* No personal data stored
+* All logs anonymized
+* Guardrails enforce safe content
+
+---
+
+# 🌩️ Cloud Deployment (Step-by-Step)
+
+### 1. Launch EC2
+
+```bash
+ssh -i chromamatch-key.pem ubuntu@13.60.180.47
+```
+
+### 2. Clone repo
+
+```bash
+git clone https://github.com/noori-shaukat/ChromaMatch.git
+cd ChromaMatch
+```
+
+### 3. Create virtual environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 4. Run MLflow
+
+```bash
+mlflow server --host 0.0.0.0 --port 5000 \
+ --backend-store-uri sqlite:///mlflow.db \
+ --default-artifact-root s3://chromamatch-artifacts/
+```
+
+### 5. Start FastAPI
+
+```bash
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+```
+
+### 6. Start Monitoring Stack
+
+* **Prometheus:** [http://13.60.180.47:9090](http://13.60.180.47:9090)
+* **Grafana:** [http://13.60.180.47:3000](http://13.60.180.47:3000)
+* **Evidently:** [http://13.60.180.47:7000](http://13.60.180.47:7000)
+
+---
+
+# 📁 Useful Links
+
+| Service      | URL                                                            |
+| ------------ | -------------------------------------------------------------- |
+| MLflow       | [http://13.60.180.47:5000/](http://13.60.180.47:5000/)         |
+| Grafana      | [http://13.60.180.47:3000/](http://13.60.180.47:3000/)         |
+| Prometheus   | [http://13.60.180.47:9090/](http://13.60.180.47:9090/)         |
+| Evidently    | [http://13.60.180.47:7000/](http://13.60.180.47:7000/)         |
+| Backend API  | [http://13.60.180.47:8000/](http://13.60.180.47:8000/)         |
+| Swagger Docs | [http://13.60.180.47:8000/docs](http://13.60.180.47:8000/docs) |
+
+---
